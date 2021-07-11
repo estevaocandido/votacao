@@ -22,7 +22,10 @@ import com.desafio.dbc.model.Sessao;
 import com.desafio.dbc.model.Voto;
 import com.desafio.dbc.repository.VotoRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class VotoService {
 
 	@Autowired
@@ -52,12 +55,13 @@ public class VotoService {
 			
 			Optional<List<Voto>> votos = votoRepository.findByAssociadoAndSessao(sessao.get().getPauta().getPautaId(), associado.get().getMatricula());
 			
-			if(!votos.get().isEmpty()) throw new BusinesException(Constants.VOTO_EXIST);
+			if(votos.isPresent() && !votos.get().isEmpty()) throw new BusinesException(Constants.VOTO_EXIST);
 			
 			if(sessao.get().getInicioSessao().isAfter(LocalDateTime.now()) && sessao.get().getFinalSessao().isBefore(LocalDateTime.now())) {
 				throw new BusinesException(Constants.OUT_OF_TIME_SESSAO);
 			}
 		} else {
+			log.info("Não foi autorizado o voto do Associado {} ", associado.get());
 			throw new BusinesNotAutorizationException(Constants.NOT_AUTORIZATION);
 		}
 		

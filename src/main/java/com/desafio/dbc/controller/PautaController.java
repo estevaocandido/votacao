@@ -17,24 +17,39 @@ import com.desafio.dbc.dto.PautaDTO;
 import com.desafio.dbc.exception.BusinesNotFoundException;
 import com.desafio.dbc.model.Pauta;
 import com.desafio.dbc.service.PautaService;
+import com.desafio.dbc.swagger.ConstantsSwagger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
-@RequestMapping(value = "/pauta")
+@RequestMapping(value = "/pauta/v1")
+@Api(tags = { "Pauta" })
 public class PautaController {
 	
 	@Autowired
 	private PautaService pautaService;
 	
-	@GetMapping
+	@ApiOperation(value = "Busca todas as pautas existentes.", notes = "Busca todas as pautas que existem no banco.", hidden = false)
+	@GetMapping("/all")
+    @ApiResponses({ @ApiResponse(code = 200, message = ConstantsSwagger.BUSCA_EFETUADA_COM_SUCESSO),
+        @ApiResponse(code = 400, message = ConstantsSwagger.ERRO_400),
+        @ApiResponse(code = 500, message = ConstantsSwagger.ERRO_500) })
 	public ResponseEntity<List<Pauta>> findAll(){
 		List<Pauta> list = pautaService.findAll();
 		return ResponseEntity.ok().body(list);
 	}
 	
 	@GetMapping("/{id}")
+	@ApiOperation(value = "Busca pauta por id.", notes = "Busca uma pauta específica pelo id.", hidden = false)
+    @ApiResponses({ @ApiResponse(code = 200, message = ConstantsSwagger.BUSCA_EFETUADA_COM_SUCESSO),
+        @ApiResponse(code = 400, message = ConstantsSwagger.ERRO_400),
+        @ApiResponse(code = 500, message = ConstantsSwagger.ERRO_500) })
 	public ResponseEntity<Pauta> getPauta(@PathVariable Long id) {
 		return ResponseEntity.ok().body(pautaService.getPautaById(id));
 	}
@@ -47,7 +62,11 @@ public class PautaController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(objectNode);
 	}
 	
-	@PostMapping
+	@PostMapping("/create")
+	@ApiOperation(value = "Criando Pauta.", notes = "Cria uma nova pauta", hidden = false)
+    @ApiResponses({ @ApiResponse(code = 201, message = ConstantsSwagger.PAUTA_CRIADA_COM_SUCESSO),
+        @ApiResponse(code = 400, message = ConstantsSwagger.ERRO_400),
+        @ApiResponse(code = 500, message = ConstantsSwagger.ERRO_500) })
 	public ResponseEntity<Pauta> createPauta(@RequestBody PautaDTO pauta){
 		try {
 			return new ResponseEntity<>(pautaService.createPauta(pauta), HttpStatus.CREATED);

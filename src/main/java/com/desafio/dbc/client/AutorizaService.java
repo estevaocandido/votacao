@@ -15,7 +15,7 @@ public class AutorizaService {
 	@Autowired
 	private AssociadoAutorizado associadoAutorizado;
 	
-	@GetMapping("{cpf}")
+	@GetMapping("users/{cpf}")
 	public ResponseEntity<ClientRetornoAssociado> getAutorizacao(@PathVariable String cpf){
 		log.info("Iniciando consulta autorização para o CPF " + cpf);
 		ClientRetornoAssociado associado = associadoAutorizado.verificaAutorizacaoAssociado(cpf);

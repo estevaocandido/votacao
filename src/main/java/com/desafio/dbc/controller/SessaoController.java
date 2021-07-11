@@ -13,18 +13,31 @@ import com.desafio.dbc.dto.SessaoDTO;
 import com.desafio.dbc.exception.BusinesException;
 import com.desafio.dbc.model.Sessao;
 import com.desafio.dbc.service.SessaoService;
+import com.desafio.dbc.swagger.ConstantsSwagger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
-@RequestMapping(value = "/sessao")
+@RequestMapping(value = "/sessao/v1")
+@Api(tags = { "Sessão" })
 public class SessaoController {
 	
 	@Autowired
 	private SessaoService sessaoService;
 	
-	@PostMapping
+	@PostMapping("/open")
+	@ApiOperation(value = "Abre a Sessão.", notes = "Realiza a abertura de sessão.", hidden = false)
+	@ApiResponses(value = {
+		    @ApiResponse(code = 200, message = ConstantsSwagger.SESSAO_ABERTA_COM_SUCESSO),
+		    @ApiResponse(code = 400, message = ConstantsSwagger.ERRO_400),
+		    @ApiResponse(code = 500, message = ConstantsSwagger.ERRO_500),
+		})
 	public ResponseEntity<Sessao> openSessao(@RequestBody SessaoDTO sessao) {
 		return new ResponseEntity<>(sessaoService.openSessao(sessao), HttpStatus.OK);
 	}

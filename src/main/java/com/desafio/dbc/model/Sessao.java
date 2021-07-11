@@ -13,6 +13,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,12 +28,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @Table(name = "sessao")
+@ApiModel(value = "Sessao", description = "Objeto com as informações da Sessão.")
 public class Sessao  implements Serializable{
 	
 	private static final long serialVersionUID = 1550868071974981187L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(value = "Campo obrigatório contendo o idêntificador da Sessão.", required = true)
 	private Long sessaoId;
 
 	@OneToOne()
@@ -40,9 +44,11 @@ public class Sessao  implements Serializable{
 	private Pauta pauta;
 	
 	@NotNull
+	@ApiModelProperty(value = "Campo obrigatório contendo o início de uma Sessão.", required = true)
 	private LocalDateTime inicioSessao;
 	
 	@NotNull
+	@ApiModelProperty(value = "Campo obrigatório contendo o final de uma Sessão.", required = true)
 	private LocalDateTime finalSessao;
 	
 	@PrePersist

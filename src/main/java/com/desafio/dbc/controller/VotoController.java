@@ -14,18 +14,32 @@ import com.desafio.dbc.dto.VotoDTO;
 import com.desafio.dbc.exception.BusinesException;
 import com.desafio.dbc.exception.BusinesNotAutorizationException;
 import com.desafio.dbc.service.VotoService;
+import com.desafio.dbc.swagger.ConstantsSwagger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
-@RequestMapping(value = "/voto")
+@RequestMapping(value = "/voto/v1")
+@Api(tags = { "Voto" })
 public class VotoController {
 	
 	@Autowired
 	private VotoService votoService;
 	
-	@PostMapping
+	@PostMapping("/votar")
+	@ApiOperation(value = "Realiza o voto.", notes = "Realiza o voto.", hidden = false)
+	@ApiResponses(value = {
+		    @ApiResponse(code = 200, message = ConstantsSwagger.VOTO_EFETIVADO_COM_SUCESSO),
+		    @ApiResponse(code = 400, message = ConstantsSwagger.ERRO_400),
+		    @ApiResponse(code = 403, message = ConstantsSwagger.NOT_AUTORIZATION),
+		    @ApiResponse(code = 500, message = ConstantsSwagger.ERRO_500),
+		})
 	public ResponseEntity<JsonNode> votar(@RequestBody VotoDTO sessao) {
 		votoService.votar(sessao);
 		return ResponseEntity.status(HttpStatus.OK).body(getJsonNode());
@@ -51,7 +65,7 @@ public class VotoController {
 		ObjectNode objectNode = new ObjectMapper().createObjectNode();
 		objectNode.put("status", HttpStatus.UNAUTHORIZED.value());
 		objectNode.put("message", e.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(objectNode);
 	}
 	
 }
