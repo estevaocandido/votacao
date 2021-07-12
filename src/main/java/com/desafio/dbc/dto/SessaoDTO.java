@@ -6,9 +6,17 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Getter
+@ToString
 @ApiModel(value = "SessaoDTO", description = "Objeto contendo os dados para abertura de uma Sessão.")
 public class SessaoDTO {
 	

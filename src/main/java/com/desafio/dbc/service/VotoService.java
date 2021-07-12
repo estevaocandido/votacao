@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.desafio.dbc.client.AutorizaService;
+import com.desafio.dbc.client.AutorizaAssociadoClient;
 import com.desafio.dbc.client.ClientRetornoAssociado;
 import com.desafio.dbc.constants.Constants;
 import com.desafio.dbc.dto.VotoDTO;
@@ -38,7 +38,7 @@ public class VotoService {
 	private AssociadoService associadoService;
 	
 	@Autowired
-	private AutorizaService autorizaService;
+	private AutorizaAssociadoClient autorizaAssociadoClient;
 
 	public Voto votar(VotoDTO voto) {
 		
@@ -48,10 +48,12 @@ public class VotoService {
 		
 		Optional<Sessao> sessao = sessaoService.findById(voto.getSessaoId());
 		if(!sessao.isPresent()) throw new BusinesException(Constants.SESSAO_NOT_FOUND);
-
-		ResponseEntity<ClientRetornoAssociado> autorizacao = autorizaService.getAutorizacao(associado.get().getCpf());
 		
+		ResponseEntity<ClientRetornoAssociado> autorizacao = autorizaAssociadoClient.verificarCpf(associado.get().getCpf());
+
 		if(autorizacao.getStatusCode().equals(HttpStatus.OK) &&  autorizacao.getBody().getStatus().equals(Constants.AUTORIZADO)) {
+			
+			log.info("Associado {} tem o voto {}", associado.get(), autorizacao.getBody());
 			
 			Optional<List<Voto>> votos = votoRepository.findByAssociadoAndSessao(sessao.get().getPauta().getPautaId(), associado.get().getMatricula());
 			

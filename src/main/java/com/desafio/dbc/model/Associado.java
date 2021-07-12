@@ -10,10 +10,12 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
+import lombok.ToString;
 
 
 @Entity
 @Getter
+@ToString
 public class Associado implements Serializable{
 	
 	private static final long serialVersionUID = 6374930583020468502L;
